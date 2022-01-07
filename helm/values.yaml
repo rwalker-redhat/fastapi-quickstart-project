@@ -9,7 +9,7 @@ imageCredentials:
 appName: fastapi-quickstart
 
 imageName: fastapi-quickstart-app
-tag: '1.2'
+tag: '1.3'
 
 ports:
   port: 8000
