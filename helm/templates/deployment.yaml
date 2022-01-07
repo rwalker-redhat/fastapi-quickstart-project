@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.appName }}-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}-deploy
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appName }}-deploy
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: fastapi-quickstart
+        image: 'image-registry.openshift-image-registry.svc:5000/{{ .Values.namespace }}/{{ .Values.imageName }}:{{ .Values.tag }}'
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.ports.targetPort }}
+        env:
+        - name: ENV_STRING
+          value: 'Hello Helm'

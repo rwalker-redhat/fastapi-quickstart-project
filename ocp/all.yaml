@@ -1,0 +1,54 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi-app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi-app-deployment
+  template:
+    metadata:
+      labels:
+        app: fastapi-app-deployment
+    spec:
+      containers:
+      - name: fastapi-quickstart-ctr
+        image: image-registry.openshift-image-registry.svc:5000/ocp-fastapi-quickstart-project/fastapi-quickstart-img:1.0
+        ports:
+        - containerPort: 8000
+        env:
+        - name: ENV_STRING
+          value: "Hello OpenShift"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastapi-app-svc
+spec:
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - port: 8000
+    protocol: TCP
+    targetPort: 8000
+  selector:
+    app: fastapi-app-deployment
+  sessionAffinity: None
+  type: ClusterIP
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: fastapi-app-route
+spec:
+  port:
+    targetPort: 8000
+  to:
+    kind: Service
+    name: fastapi-app-svc
+    weight: 100
+  wildcardPolicy: None
