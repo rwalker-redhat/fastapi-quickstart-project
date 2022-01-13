@@ -6,7 +6,7 @@ imageCredentials:
   password: sha256~XcdJ5EPXTVcQEuowrwDmEYfK_rSFvGWZE0Kwu28gvKY
 appName: fastapi-quickstart
 imageName: fastapi-quickstart-app
-tag: '5.0'
+tag: '8.0'
 ports:
   port: 8000
   targetPort: 8000
