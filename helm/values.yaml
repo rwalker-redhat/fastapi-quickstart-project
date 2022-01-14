@@ -4,10 +4,10 @@ imageCredentials:
   registry: image-registry.openshift-image-registry.svc:5000
   username: developer
   password: sha256~smjWnK0rTFCrxA0TGgw8cuyJCc00W6yqdlYgLA93JLU
-appName: fastapi-demo-one
-imageName: fastapi-demo-one
+appName: fastapi-demo
+imageName: fastapi-demo-app
 tag: '1.7'
 ports:
   port: 8000
   targetPort: 8000
-namespace: demo-one
+namespace: demo
