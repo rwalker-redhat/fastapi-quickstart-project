@@ -3,11 +3,11 @@ imagePullSecrets:
 imageCredentials:
   registry: image-registry.openshift-image-registry.svc:5000
   username: developer
-  password: sha256~XcdJ5EPXTVcQEuowrwDmEYfK_rSFvGWZE0Kwu28gvKY
-appName: fastapi-quickstart
-imageName: fastapi-quickstart-app
+  password: sha256~qkakkBw33TGRIOl-nusvzzaFkTQzm9cCki_aVS3HyE4
+appName: fastapi-demo-one
+imageName: fastapi-demo-one
 tag: '1.0'
 ports:
   port: 8000
   targetPort: 8000
-namespace: ocp-fastapi-quickstart-project
+namespace: demo-one
