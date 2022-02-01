@@ -3,7 +3,7 @@ imagePullSecrets:
 imageCredentials:
   registry: image-registry.openshift-image-registry.svc:5000
   username: developer
-  password: sha256~L1uv2Q-9crjWdIuiloFdrRild2tvspvFvSMvkzXGPkI
+  password: sha256~8OG1lcQmBAjb4L6zB30HVkd_sY-3wQtSoqvuvyjuxjk
 appName: fastapi-demo
 imageName: fastapi-demo
 tag: '1.2'
