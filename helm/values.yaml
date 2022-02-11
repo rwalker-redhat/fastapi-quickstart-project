@@ -4,10 +4,10 @@ imageCredentials:
   registry: image-registry.openshift-image-registry.svc:5000
   username: developer
   password: sha256~UCo6LrYnYXcbKDF0tF6FoY1Ga-s4g4UZbco2UQxxODA
-appName: fastapi-quickstart
-imageName: fastapi-quickstart-app
+appName: fastapi-app
+imageName: fastapi-app
 tag: '1.0'
 ports:
   port: 8000
   targetPort: 8000
-namespace: ocp-fastapi-quickstart-project
+namespace: pipeline-demo
