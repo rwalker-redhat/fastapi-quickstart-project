@@ -6,7 +6,7 @@ imageCredentials:
   password: sha256~TGTzASHHwqu58zDz3BMPQ5iAb42ZYUQXs9OQF1fd6-c
 appName: fastapi-app
 imageName: fastapi-app
-tag: '1.0'
+tag: '1.3'
 ports:
   port: 8000
   targetPort: 8000
