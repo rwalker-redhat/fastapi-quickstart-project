@@ -2,12 +2,12 @@ imagePullSecrets:
   - name: ocpregcred
 imageCredentials:
   registry: image-registry.openshift-image-registry.svc:5000
-  username: developer
-  password: sha256~XcdJ5EPXTVcQEuowrwDmEYfK_rSFvGWZE0Kwu28gvKY
+  username: opentlc-mgr
+  password: sha256~Xge76KlscXjSJcQpEOQntG4EcT1pUz5_EphxLoSmJKI
 appName: fastapi-quickstart
 imageName: fastapi-quickstart-app
 tag: '1.0'
 ports:
   port: 8000
   targetPort: 8000
-namespace: ocp-fastapi-quickstart-project
+namespace: demo
