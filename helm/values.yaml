@@ -3,9 +3,9 @@ imagePullSecrets:
 imageCredentials:
   registry: image-registry.openshift-image-registry.svc:5000
   username: opentlc-mgr
-  password: sha256~aSO_dIbHVs-l6iT0jUJr0uBTsCBkQYSER9pSIUKfTjg
+  password: sha256~XaWqjpb7Pu_QRxQPDPIWCozatsgbsY9m7NBw2hsSyes
 appName: fastapi-quickstart
-imageName: fastapi-quickstart-app
+imageName: fastapi-quickstart-img
 tag: '1.0'
 ports:
   port: 8000

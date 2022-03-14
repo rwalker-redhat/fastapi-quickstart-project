@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ .Values.appName }}-deploy
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: {{ .Values.appName }}-deploy
