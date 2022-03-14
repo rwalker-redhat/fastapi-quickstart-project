@@ -5,9 +5,7 @@ metadata:
   namespace: demo
 spec:
   params:
-  - name: git-repo-url
+  - name: GIT_REPO
     value: $(body.repository.url)
-  - name: git-repo-name
-    value: $(body.repository.name)
-  - name: git-revision
+  - name: GIT_REVISION
     value: $(body.head_commit.id)

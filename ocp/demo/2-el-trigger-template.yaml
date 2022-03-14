@@ -5,38 +5,47 @@ metadata:
   namespace: demo
 spec:
   params:
-  - name: git-repo-url
-    description: The git repository url
-  - name: git-revision
-    description: The git revision
-    default: master
-  - name: git-repo-name
-    description: The name of the deployment to be created / patched
+  - name: IMAGE_NAME
+    description: Name of the container image
+    default: fastapi-quickstart-img
+  - name: IMAGE_TAG
+    description: The tag of the container image
+    default: '2.0'
+  - name: GIT_REPO
+    description: The name of the deployment git repo
+    default: 'https://github.com/rwalker-redhat/fastapi-quickstart-project.git'
+  - name: GIT_REVISION
+    description: The name of the deployment git repo
+    default: main
+  - name: MESSAGE
+    description: The name of the deployment git repo
+    default: 'message from event trigger'
 
   resourcetemplates:
   - apiVersion: tekton.dev/v1beta1
     kind: PipelineRun
     metadata:
-      generateName: build-deploy-$(tt.params.git-repo-name)-
+      generateName: build-deploy-$(tt.params.IMAGE_TAG)-
     spec:
       serviceAccountName: pipeline
       pipelineRef:
         name: fetch-build
       params:
-      - name: deployment-name
-        value: $(tt.params.git-repo-name)
-      - name: git-url
-        value: $(tt.params.git-repo-url)
-      - name: git-revision
-        value: $(tt.params.git-revision)
-      - name: IMAGE
-        value: image-registry.openshift-image-registry.svc:5000/demo/$(tt.params.git-repo-name)
+      - name: IMAGE_NAME
+        value: >-
+          image-registry.openshift-image-registry.svc:5000/demo/fastapi-quickstart-img
+      - name: IMAGE_TAG
+        value: 2.0
+      - name: GIT_REPO
+        value: $(tt.params.GIT_REPO)
+      - name: GIT_REVISION
+        value: $(tt.params.GIT_REVISION)
+      - name: MESSAGE
+        value: 'triggered'
       workspaces:
-      - name: shared-workspace
-        volumeClaimTemplate:
-          spec:
-            accessModes:
-              - ReadWriteOnce
-            resources:
-              requests:
-                storage: 1G
+      - name: workspace
+        persistentVolumeClaim:
+          claimName: shared-workspace
+      - name: ssh-creds
+        secret:
+          secretName: pipeline-ssh-key
