@@ -158,6 +158,13 @@ Namespace: demo
 
 
 
+To list `oc get triggers.triggers.tekton.dev`.
+
+To describe `oc describe triggers.triggers.tekton.dev fastapi-trigger`.
+
+
+To list event listeners `oc get el`.
+
 Once the Envent Lister is added, create a route by exposing the service with `oc expose service/el-fastapi-ev`
 
 Under the repos settings in GitHub, select Webhooks, enter the Payload URL with content type "application/json" and "Just the `push` event".
