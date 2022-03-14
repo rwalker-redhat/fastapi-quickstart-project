@@ -1,0 +1,9 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: EventListener
+metadata:
+  name: fastapi-ev
+  namespace: demo
+spec:
+  serviceAccountName: pipeline
+  triggers:
+    - triggerRef: fastapi-trigger

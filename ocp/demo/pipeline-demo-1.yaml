@@ -1,0 +1,54 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: fetch-build
+spec:
+  params:
+    - default: image-registry.openshift-image-registry.svc:5000/demo/fastapi-quickstart-img
+      name: IMAGE_NAME
+      type: string
+    - default: '1.0'
+      name: IMAGE_TAG
+      type: string
+    - default: 'https://github.com/rwalker-redhat/fastapi-quickstart-project.git'
+      name: GIT_REPO
+      type: string
+    - default: main
+      name: GIT_REVISION
+      type: string
+    - default: Hello from Pipeline
+      name: MESSAGE
+      type: string
+  workspaces:
+    - name: workspace
+  tasks:
+    - name: fetch-repository
+      taskRef:
+        name: git-clone
+        kind: ClusterTask
+      workspaces:
+        - name: output
+          workspace: workspace
+      params:
+        - name: url
+          value: $(params.GIT_REPO)
+        - name: revision
+          value: $(params.GIT_REVISION)
+        - name: subdirectory
+          value: ""
+        - name: deleteExisting
+          value: "true"
+    - name: build
+      taskRef:
+        name: s2i-python
+        kind: ClusterTask
+      runAfter:
+        - fetch-repository
+      workspaces:
+        - name: source
+          workspace: workspace
+      params:
+        - name: IMAGE
+          value: $(params.IMAGE_NAME):$(params.IMAGE_TAG)
+        - name: TLSVERIFY
+          value: "false"

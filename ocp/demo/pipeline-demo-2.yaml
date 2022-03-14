@@ -1,0 +1,128 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: fetch-build-deploy
+  namespace: demo
+spec:
+  params:
+    - default: >-
+        image-registry.openshift-image-registry.svc:5000/demo/fastapi-quickstart-img
+      name: IMAGE_NAME
+      type: string
+    - default: '1.0'
+      name: IMAGE_TAG
+      type: string
+    - default: 'https://github.com/rwalker-redhat/fastapi-quickstart-project.git'
+      name: GIT_REPO
+      type: string
+    - default: main
+      name: GIT_REVISION
+      type: string
+    - default: Hello from Pipeline
+      name: MESSAGE
+      type: string
+  tasks:
+    - name: fetch-repository
+      params:
+        - name: url
+          value: $(params.GIT_REPO)
+        - name: revision
+          value: $(params.GIT_REVISION)
+        - name: deleteExisting
+          value: 'true'
+      taskRef:
+        kind: ClusterTask
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: workspace
+    - name: build
+      params:
+        - name: IMAGE
+          value: '$(params.IMAGE_NAME):$(params.IMAGE_TAG)'
+        - name: TLSVERIFY
+          value: 'false'
+      runAfter:
+        - pytest
+      taskRef:
+        kind: ClusterTask
+        name: s2i-python
+      workspaces:
+        - name: source
+          workspace: workspace
+    - name: pytest
+      params:
+        - name: PYTHON
+          value: latest
+        - name: SOURCE_PATH
+          value: .
+        - name: REQUIREMENTS_FILE
+          value: requirements.txt
+      runAfter:
+        - fetch-repository
+      taskRef:
+        kind: Task
+        name: pytest
+      workspaces:
+        - name: source
+          workspace: workspace
+    - name: yq
+      params:
+        - name: files
+          value:
+            - helm/values.yaml
+        - name: expression
+          value: .tag = $(params.IMAGE_TAG)
+        - name: image
+          value: >-
+            docker.io/mikefarah/yq:4.16.2@sha256:0d4f6e27bdcac7316f635acd524ab0eecc4ad50834b54d10322268650c7712cb
+      runAfter:
+        - build
+      taskRef:
+        kind: Task
+        name: yq
+      workspaces:
+        - name: source
+          workspace: workspace
+    - name: git-cli
+      params:
+        - name: BASE_IMAGE
+          value: >-
+            docker.io/alpine/git:v2.26.2@sha256:23618034b0be9205d9cc0846eb711b12ba4c9b468efdd8a59aac1d7b1a23363f
+        - name: GIT_SCRIPT
+          value: >
+            git add helm/values.yaml
+
+            git commit -m "updated tag via pipeline" --allow-empty
+
+            git remote set-url origin
+            git@github.com:rwalker-redhat/fastapi-quickstart-project.git
+
+
+            export GIT_SSH_COMMAND="ssh -i /root/.ssh/pipeline -o
+            'IdentitiesOnly yes'"
+
+
+            git push origin HEAD:$(params.GIT_REVISION)
+        - name: USER_HOME
+          value: /root
+        - name: VERBOSE
+          value: 'true'
+        - name: GIT_USER_NAME
+          value: rwalker-redhat
+        - name: GIT_USER_EMAIL
+          value: rwalker@redhat.com
+      runAfter:
+        - yq
+      taskRef:
+        kind: ClusterTask
+        name: git-cli
+      workspaces:
+        - name: source
+          workspace: workspace
+        - name: ssh-directory
+          workspace: ssh-creds
+  workspaces:
+    - name: workspace
+    - name: ssh-creds
+
